@@ -11,65 +11,106 @@ const ClassicTemplate = ({ resume, onDownloadCode }) => {
     const portfolioRef = useRef();
     if (!resume) return null;
 
+    const featuredSkills = (resume.skills || []).slice(0, 6);
+
     return (
-        <div className="bg-gray-100 font-sans">
-            <div ref={portfolioRef} className="max-w-4xl mx-auto bg-white shadow-2xl p-8 sm:p-12 my-8 sm:my-16">
-                <header className="text-center border-b-2 pb-8 mb-10">
-                    <div className="w-32 h-32 mx-auto bg-gray-200 rounded-full mb-4 flex items-center justify-center text-gray-500 text-xs">Profile Pic</div>
-                    <h1 className="text-5xl font-bold text-gray-800">{resume.name.full}</h1>
-                    <h2 className="text-2xl font-light text-gray-600 mt-2">{resume.currentJobRole}</h2>
-                    <div className="mt-6 flex justify-center items-center gap-x-6 gap-y-2 text-sm text-gray-500 flex-wrap">
-                        <span className="flex items-center gap-2"><MailIcon /><a href={`mailto:${resume.email}`} className="hover:text-blue-600">{resume.email}</a></span>
-                        <span className="flex items-center gap-2"><PhoneIcon />{resume.phone}</span>
-                        <span className="flex items-center gap-2"><MapPinIcon />{resume.address?.city || 'Global'}</span>
+        <div className="bg-gray-50 font-sans">
+            {/* HERO */}
+            <section className="relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-indigo-50"></div>
+                <div className="absolute -top-40 -right-24 h-96 w-96 rounded-full bg-blue-200/60 blur-3xl opacity-70"></div>
+                <div className="absolute -bottom-40 -left-24 h-96 w-96 rounded-full bg-indigo-200/60 blur-3xl opacity-70"></div>
+                <div className="relative max-w-6xl mx-auto px-6 pt-20 pb-12 sm:pt-28 sm:pb-20">
+                    <div className="flex flex-col items-center text-center gap-6">
+                        <div className="relative">
+                            <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-full bg-white shadow-md ring-2 ring-white/60 flex items-center justify-center text-gray-400 text-xs overflow-hidden">
+                                Profile Pic
+                            </div>
+                            <span className="absolute -inset-1 rounded-full bg-gradient-to-tr from-blue-400/30 via-indigo-400/30 to-purple-400/30 blur-md -z-10"></span>
+                        </div>
+                        <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-gray-900">
+                            {resume.name.full}
+                        </h1>
+                        <p className="text-lg sm:text-xl text-gray-600">{resume.currentJobRole}</p>
+                        <div className="mt-2 flex flex-wrap items-center justify-center gap-4 text-sm text-gray-600">
+                            <span className="flex items-center gap-2"><MailIcon /><a href={`mailto:${resume.email}`} className="hover:text-blue-700 transition-colors">{resume.email}</a></span>
+                            <span className="flex items-center gap-2"><PhoneIcon />{resume.phone}</span>
+                            <span className="flex items-center gap-2"><MapPinIcon />{resume.address?.city || 'Global'}</span>
+                        </div>
+                        {featuredSkills.length > 0 && (
+                            <div className="mt-6 flex flex-wrap justify-center gap-2">
+                                {featuredSkills.map((skill, i) => (
+                                    <span key={i} className="px-3 py-1.5 rounded-full bg-white/70 backdrop-blur text-gray-800 text-sm ring-1 ring-gray-200">
+                                        {skill}
+                                    </span>
+                                ))}
+                            </div>
+                        )}
                     </div>
-                </header>
+                </div>
+            </section>
 
-                <main className="space-y-12">
-                    <Section title="About Me">
-                        <p className="text-gray-700 leading-relaxed">{resume.jobDescription}</p>
-                    </Section>
-                    
-                    <Section title="Professional Experience">
-                        <div className="space-y-8">
-                            {resume.experience?.map((exp, index) => (
-                                <div key={index}>
-                                    <div className="flex justify-between items-baseline">
-                                        <h3 className="text-xl font-semibold text-gray-800">{exp.role}</h3>
-                                        <div className="text-sm text-gray-500 font-medium">{exp.fromDate} - {exp.toDate}</div>
+            {/* CONTENT CARD */}
+            <div ref={portfolioRef} className="max-w-6xl mx-auto -mt-6 sm:-mt-10 mb-6 sm:mb-12 px-6">
+                <div className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl ring-1 ring-gray-200/80 overflow-hidden">
+                    <main className="p-8 sm:p-12 space-y-12">
+                        <Section title="About Me">
+                            <p className="text-gray-700 leading-relaxed">{resume.jobDescription}</p>
+                        </Section>
+
+                        <Section title="Experience">
+                            <div className="relative space-y-8">
+                                {resume.experience?.map((exp, index) => (
+                                    <div key={index} className="relative pl-6 group">
+                                        <div className="absolute left-0 top-2 h-3 w-3 rounded-full bg-gradient-to-tr from-blue-500 to-indigo-500"></div>
+                                        <div className="flex flex-wrap justify-between gap-2 items-baseline">
+                                            <h3 className="text-xl font-semibold text-gray-900 group-hover:text-indigo-700 transition-colors">{exp.role}</h3>
+                                            <div className="text-sm text-gray-500 font-medium">{exp.fromDate} - {exp.toDate}</div>
+                                        </div>
+                                        <p className="text-gray-700">{exp.companyName}</p>
+                                        <p className="mt-2 text-gray-600 leading-relaxed">{exp.description}</p>
                                     </div>
-                                    <p className="text-lg text-gray-700 mt-1">{exp.companyName}</p>
-                                    <p className="mt-2 text-gray-600 leading-relaxed">{exp.description}</p>
-                                </div>
-                            ))}
-                        </div>
-                    </Section>
+                                ))}
+                            </div>
+                        </Section>
 
-                    <Section title="Featured Projects">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            {resume.projects?.map((proj, index) => (
-                                <div key={index} className="border-l-4 border-blue-500 pl-4">
-                                    <h3 className="text-lg font-semibold text-gray-800">{proj.project_name}</h3>
-                                    <p className="mt-1 text-gray-600">{proj.project_description}</p>
-                                </div>
-                            ))}
-                        </div>
-                    </Section>
+                        <Section title="Education">
+                            <div className="relative space-y-8 pl-6">
+                                {resume.education?.map((edu, index) => (
+                                    <div key={index} className="relative group">
+                                        <div className="absolute -left-6 top-2 h-3 w-3 rounded-full bg-gradient-to-tr from-blue-500 to-indigo-500"></div>
+                                        <div className="flex flex-wrap justify-between gap-2 items-baseline">
+                                            <h3 className="text-xl font-semibold text-gray-900 group-hover:text-indigo-700 transition-colors">{edu.institution}</h3>
+                                            <div className="text-sm text-gray-500 font-medium">{edu.fromDate} - {edu.toDate}</div>
+                                        </div>
+                                        <p className="text-gray-700">{edu.degree}</p>
+                                        {edu.description && (
+                                            <p className="mt-2 text-gray-600 leading-relaxed">{edu.description}</p>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        </Section>
 
-                    <Section title="Skills & Expertise">
-                        <div className="flex flex-wrap gap-3">
-                            {resume.skills?.map((skill, index) => (
-                                <span key={index} className="bg-gray-200 text-gray-800 text-sm font-medium px-4 py-2 rounded-md">{skill}</span>
-                            ))}
-                        </div>
-                    </Section>
-                </main>
+                        <Section title="Skills & Expertise">
+                            <div className="flex flex-wrap gap-3">
+                                {resume.skills?.map((skill, index) => (
+                                    <span key={index} className="bg-gradient-to-r from-gray-100 to-gray-50 ring-1 ring-gray-200 text-gray-800 text-sm font-medium px-4 py-2 rounded-full shadow-sm">
+                                        {skill}
+                                    </span>
+                                ))}
+                            </div>
+                        </Section>
+                    </main>
+                </div>
             </div>
-            <div className="max-w-4xl mx-auto mb-8 flex flex-wrap justify-center items-center gap-3">
-                <button onClick={onDownloadCode} className="flex items-center justify-center gap-2 bg-blue-600 text-white font-semibold py-2 px-5 rounded-md hover:bg-blue-700 transition-colors">
-                    <CodeIcon/><span>Download Code</span>
-                </button>
-                <a href="/" className="bg-gray-600 text-white font-semibold py-2 px-5 rounded-md hover:bg-gray-700 transition-colors">Generate New</a>
+            <div className="max-w-6xl mx-auto px-6 pb-12 flex justify-center">
+                <div className="flex flex-wrap justify-center gap-3">
+                    <button onClick={onDownloadCode} className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-3 font-semibold shadow-lg shadow-blue-600/20 hover:from-blue-700 hover:to-indigo-700 transition-colors">
+                        <CodeIcon/><span>Download Code</span>
+                    </button>
+                    <a href="/" className="inline-flex items-center rounded-full bg-gray-900 text-white px-6 py-3 font-semibold shadow-sm hover:bg-gray-800 transition-colors">Generate New</a>
+                </div>
             </div>
         </div>
     );

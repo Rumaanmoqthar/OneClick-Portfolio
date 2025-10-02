@@ -22,69 +22,96 @@ const ModernTemplate = ({ resume, onDownloadCode }) => {
 
     return (
         <div 
-          className="min-h-screen bg-cover bg-center bg-fixed p-4 sm:p-8" 
+          className="min-h-screen bg-cover bg-center bg-fixed p-0" 
           style={{ backgroundImage: `url(${backgroundImageUrl})` }}
         >
-          <div ref={portfolioRef} className="max-w-4xl mx-auto bg-black/50 backdrop-blur-xl text-white rounded-2xl border border-white/10 shadow-2xl overflow-hidden">
-            <header className="p-8 sm:p-10 border-b border-white/10">
-              <div className="flex flex-col sm:flex-row items-center gap-6">
-                <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-full bg-white/10 border-2 border-white/20 flex-shrink-0 flex items-center justify-center text-center text-xs text-white/50">
-                  Profile<br/>Picture
-                </div>
-                <div className="text-center sm:text-left">
-                  <h1 className="text-4xl sm:text-5xl font-bold tracking-tight bg-gradient-to-r from-white to-gray-400 text-transparent bg-clip-text">{resume.name.full}</h1>
-                  <h2 className="mt-2 text-xl font-medium text-cyan-300">{resume.currentJobRole}</h2>
-                  <div className="mt-4 flex justify-center sm:justify-start items-center gap-x-5 gap-y-2 text-sm text-white/70 flex-wrap">
-                    <span className="flex items-center gap-2"><MailIcon /><a href={`mailto:${resume.email}`} className="hover:text-cyan-300 transition-colors">{resume.email}</a></span>
-                    <span className="flex items-center gap-2"><PhoneIcon />{resume.phone}</span>
-                    <span className="flex items-center gap-2"><MapPinIcon />{resume.address?.city || 'Global'}</span>
+          {/* translucent sidebar layout like iPortfolio */}
+          <div className="min-h-screen bg-black/70">
+            <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-0">
+              {/* Left sidebar */}
+              <aside className="lg:col-span-1 p-8 lg:py-16 border-b lg:border-b-0 lg:border-r border-white/10 text-white">
+                <div className="relative flex flex-col items-center lg:items-start gap-6">
+                  <div className="relative">
+                    <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-full bg-white/10 border-2 border-white/20 flex items-center justify-center text-center text-xs text-white/50 overflow-hidden">
+                      Profile<br/>Picture
+                    </div>
+                    <span className="absolute -inset-1 rounded-full bg-cyan-400/20 blur-md -z-10"></span>
+                  </div>
+                  <div className="text-center lg:text-left">
+                    <h1 className="text-3xl sm:text-4xl font-bold">{resume.name.full}</h1>
+                    <p className="text-cyan-300 mt-1">{resume.currentJobRole}</p>
+                  </div>
+                  <div className="space-y-2 text-white/80 text-sm">
+                    <div className="flex items-center gap-2"><MailIcon /><a href={`mailto:${resume.email}`} className="hover:text-cyan-300 transition-colors">{resume.email}</a></div>
+                    <div className="flex items-center gap-2"><PhoneIcon />{resume.phone}</div>
+                    <div className="flex items-center gap-2"><MapPinIcon />{resume.address?.city || 'Global'}</div>
+                  </div>
+                  <div className="pt-2 w-full">
+                    <button onClick={onDownloadCode} className="w-full inline-flex items-center justify-center gap-2 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-semibold px-5 py-2.5 rounded-md transition-colors shadow-lg shadow-cyan-600/20">
+                      <CodeIcon/> Download Code
+                    </button>
                   </div>
                 </div>
+              </aside>
+
+              {/* Right content */}
+              <div ref={portfolioRef} className="lg:col-span-2 p-8 lg:py-16 text-white space-y-12">
+                <Section title="About">
+                  <p className="text-white/90 leading-relaxed text-lg">{resume.jobDescription}</p>
+                </Section>
+
+                <Section title="Skills">
+                  <div className="flex flex-wrap gap-3">
+                    {resume.skills?.map((skill, index) => (
+                      <span key={index} className="bg-white/10 text-cyan-200 text-sm font-medium px-4 py-1.5 rounded-full">{skill}</span>
+                    ))}
+                  </div>
+                </Section>
+
+                <Section title="Experience">
+                  <div className="relative space-y-8 pl-6 border-l-2 border-white/10">
+                    {resume.experience?.map((exp, index) => (
+                      <div key={index} className="relative group">
+                        <div className="absolute -left-[30px] top-1 h-4 w-4 bg-cyan-400 rounded-full border-4 border-black/60"></div>
+                        <p className="text-base text-white/70">{exp.fromDate} - {exp.toDate}</p>
+                        <h3 className="text-xl font-semibold text-white mt-1 group-hover:text-cyan-300 transition-colors">{exp.role}</h3>
+                        <p className="text-cyan-300">{exp.companyName}</p>
+                        <p className="text-base text-white/80 mt-2 leading-relaxed">{exp.description}</p>
+                      </div>
+                    ))}
+                  </div>
+                </Section>
+
+                <Section title="Education">
+                  <div className="relative space-y-8 pl-6 border-l-2 border-white/10">
+                    {resume.education?.map((edu, index) => (
+                      <div key={index} className="relative group">
+                        <div className="absolute -left-[30px] top-1 h-4 w-4 bg-cyan-400 rounded-full border-4 border-black/60"></div>
+                        <p className="text-base text-white/70">{edu.fromDate} - {edu.toDate}</p>
+                        <h3 className="text-xl font-semibold text-white mt-1 group-hover:text-cyan-300 transition-colors">{edu.institution}</h3>
+                        <p className="text-cyan-300 text-base">{edu.degree}</p>
+                        {edu.description && (
+                          <p className="text-base text-white/80 mt-2 leading-relaxed">{edu.description}</p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </Section>
+
+                <Section title="Interests">
+                  <p className="text-white/90 leading-relaxed text-lg">
+                    {resume.hobbies || resume.currentJobRole}
+                  </p>
+                </Section>
+
+                <footer className="pt-6 border-t border-white/10 text-white/60 text-sm">
+                  <p>{resume.hobbies || 'Passion for technology and continuous learning.'}</p>
+                </footer>
               </div>
-            </header>
-            <main className="p-8 sm:p-10 space-y-12">
-              <Section title="About"><p className="text-white/80 leading-relaxed">{resume.jobDescription}</p></Section>
-              <Section title="Experience">
-                <div className="relative space-y-8 pl-6 border-l-2 border-white/10">
-                  {resume.experience?.map((exp, index) => (
-                    <div key={index} className="relative">
-                      <div className="absolute -left-[30px] top-1 h-4 w-4 bg-cyan-400 rounded-full border-4 border-black/50"></div>
-                      <p className="text-sm text-white/50">{exp.fromDate} - {exp.toDate}</p>
-                      <h3 className="text-lg font-semibold text-white mt-1">{exp.role}</h3>
-                      <p className="text-cyan-300">{exp.companyName}</p>
-                      <p className="text-sm text-white/70 mt-2 leading-relaxed">{exp.description}</p>
-                    </div>
-                  ))}
-                </div>
-              </Section>
-              <Section title="Projects">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  {resume.projects?.map((proj, index) => (
-                    <div key={index} className="bg-white/5 p-6 rounded-lg border border-white/10 hover:border-cyan-400/50 transition-colors group">
-                      <h3 className="text-md font-semibold text-white group-hover:text-cyan-300 transition-colors">{proj.project_name}</h3>
-                      <p className="mt-2 text-sm text-white/70">{proj.project_description}</p>
-                    </div>
-                  ))}
-                </div>
-              </Section>
-              <Section title="Skills">
-                <div className="flex flex-wrap gap-3">
-                  {resume.skills?.map((skill, index) => (
-                    <span key={index} className="bg-white/10 text-cyan-200 text-sm font-medium px-4 py-1.5 rounded-full">{skill}</span>
-                  ))}
-                </div>
-              </Section>
-            </main>
-            <footer className="p-8 sm:p-10 border-t border-white/10 text-center text-white/50 text-sm">
-                <p>{resume.hobbies || "Passion for technology and continuous learning."}</p>
-            </footer>
-          </div>
-          <div className="max-w-4xl mx-auto mt-6 flex flex-wrap justify-center items-center gap-3">
-            {/* MODIFICATION: Use the passed-in function */}
-            <button onClick={onDownloadCode} className="flex items-center justify-center gap-2 bg-cyan-600/80 text-white font-semibold py-2 px-5 rounded-md hover:bg-cyan-500 transition-colors backdrop-blur-sm border border-cyan-500/50">
-                <CodeIcon/><span>Download Code</span>
-            </button>
-            <a href="/" className="bg-gray-700/80 text-white font-semibold py-2 px-5 rounded-md hover:bg-gray-600 transition-colors backdrop-blur-sm border border-gray-600/50">Generate New</a>
+            </div>
+            <div className="max-w-6xl mx-auto p-8">
+              <a href="/" className="block text-center bg-gray-700/80 text-white font-semibold py-2.5 px-5 rounded-md hover:bg-gray-600 transition-colors border border-gray-600/50">Generate New</a>
+            </div>
           </div>
         </div>
     );
