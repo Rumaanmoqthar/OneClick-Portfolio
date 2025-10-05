@@ -15,7 +15,7 @@ const Uploader = () => {
   const [message, setMessage] = useState('');
   const [template, setTemplate] = useState(''); // New state for template choice
   const navigate = useNavigate();
-  const apiUrl = 'http://localhost:3000';
+  const apiBase = import.meta.env.VITE_API_URL || '';
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -45,7 +45,7 @@ const Uploader = () => {
     formData.append('template', selectedTemplate); // Send template choice to backend
 
     try {
-      const response = await fetch(`${apiUrl}/api/upload-resume`, {
+      const response = await fetch(`${apiBase}/api/upload-resume`, {
         method: 'POST',
         body: formData,
       });
