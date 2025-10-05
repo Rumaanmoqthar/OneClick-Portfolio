@@ -17,14 +17,14 @@ const PortfolioPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    const apiUrl = 'http://localhost:3000';
+    const apiBase = import.meta.env.VITE_API_URL || '';
 
     useEffect(() => {
         let isMounted = true;
         let pollingTimeout;
         const fetchResumeData = async () => {
             try {
-                const response = await fetch(`${apiUrl}/api/resume/${id}`);
+                const response = await fetch(`${apiBase}/api/resume/${id}`);
                 if (!response.ok) throw new Error('Portfolio not found or still processing.');
                 const data = await response.json();
                 if (isMounted) {
@@ -47,7 +47,7 @@ const PortfolioPage = () => {
     }, [id]);
     
     const handleDownloadCode = () => {
-        window.location.href = `${apiUrl}/api/portfolio/${id}/download?template=${template}`;
+        window.location.href = `${apiBase}/api/portfolio/${id}/download?template=${template}`;
     };
 
     if (loading) return (

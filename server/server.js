@@ -12,7 +12,6 @@ connectDB();
 
 // Initialize the Express app
 const app = express();
-const port = process.env.PORT || 3000;
 
 // Middleware setup
 app.use(cors());
@@ -21,8 +20,11 @@ app.use(express.json());
 // Main API Routes
 app.use('/api', resumeRoutes);
 
-// Start the server
-app.listen(port, () => {
-  console.log(`Server is running at http://localhost:${port}`);
+// Health check for Vercel
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'OK', timestamp: new Date().toISOString() });
 });
+
+// Export the app for Vercel serverless
+export default app;
 

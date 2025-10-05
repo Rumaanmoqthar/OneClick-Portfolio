@@ -23,7 +23,6 @@ export const uploadToParseur = async (req, res) => {
     return res.status(400).json({ error: 'No file uploaded.' });
   }
   const template = req.body.template || 'modern';
-  const filePath = req.file.path;
   let newResume;
 
   try {
@@ -33,7 +32,8 @@ export const uploadToParseur = async (req, res) => {
 
     const mailboxId = '141196';
     const form = new FormData();
-    form.append('file', fs.createReadStream(filePath));
+    // Use in-memory buffer for serverless upload
+    form.append('file', req.file.buffer, req.file.originalname || 'resume.pdf');
     form.append('InternalResumeId', newResume._id.toString());
 
     const formHeaders = form.getHeaders();
@@ -57,8 +57,6 @@ export const uploadToParseur = async (req, res) => {
     console.error('---!!! UPLOAD ERROR !!!---', errorMessage);
     if (newResume?._id) await Resume.findByIdAndDelete(newResume._id);
     res.status(500).json({ error: 'Error during the upload process. Check server logs.' });
-  } finally {
-    if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
   }
 };
 
