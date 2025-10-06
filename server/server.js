@@ -1,16 +1,12 @@
-// --- ADD THESE LINES AT THE VERY TOP OF THE FILE ---
+// --- SERVERLESS FUNCTION STARTED --- (This is our debug line)
 console.log("--- SERVERLESS FUNCTION STARTED ---");
 console.log(`--- Node.js version: ${process.version} ---`);
-// ----------------------------------------------------
 
 import express from 'express';
-import dotenv from 'dotenv';
+// dotenv is removed - Vercel handles this automatically
 import cors from 'cors';
 import connectDB from './config/db.js';
 import resumeRoutes from './routes/resumeRoutes.js';
-
-// Load environment variables from .env file
-dotenv.config();
 
 // Connect to the database
 connectDB();
