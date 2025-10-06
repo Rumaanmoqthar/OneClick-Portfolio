@@ -1,3 +1,8 @@
+// --- ADD THESE LINES AT THE VERY TOP OF THE FILE ---
+console.log("--- SERVERLESS FUNCTION STARTED ---");
+console.log(`--- Node.js version: ${process.version} ---`);
+// ----------------------------------------------------
+
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
@@ -33,4 +38,3 @@ app.get('/api/health', (req, res) => {
 
 // Export the app for Vercel serverless
 export default app;
-
