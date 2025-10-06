@@ -14,7 +14,13 @@ connectDB();
 const app = express();
 
 // Middleware setup
-app.use(cors());
+const allowedOrigins = (process.env.FRONTEND_ORIGIN || '').split(',').map(s => s.trim()).filter(Boolean);
+app.use(cors({
+  origin: allowedOrigins.length ? allowedOrigins : false,
+  methods: ['GET','POST','PUT','DELETE','OPTIONS'],
+  allowedHeaders: ['Content-Type','Authorization'],
+  credentials: true,
+}));
 app.use(express.json());
 
 // Main API Routes
