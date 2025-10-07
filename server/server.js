@@ -14,7 +14,8 @@ connectDB();
 const app = express();
 
 // --- FIX ---
-// Using a simple and permissive CORS setup for local development
+// Using a simple and permissive CORS setup for local development.
+// This allows requests from any origin.
 console.log("CORS Middleware Enabled: Allowing all origins for local development.");
 app.use(cors());
 // -----------
