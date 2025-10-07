@@ -53,10 +53,16 @@ export const uploadToParseur = async (req, res) => {
     });
 
   } catch (apiError) {
-    const errorMessage = apiError.response ? JSON.stringify(apiError.response.data) : apiError.message;
-    console.error('---!!! UPLOAD ERROR !!!---', errorMessage);
+    // Log more detailed error information if it's an Axios error
+    if (apiError.isAxiosError) {
+      console.error('---!!! PARSEUR API UPLOAD ERROR !!!---');
+      console.error('Status:', apiError.response?.status);
+      console.error('Data:', apiError.response?.data);
+    } else {
+      console.error('---!!! UPLOAD ERROR !!!---', apiError.message);
+    }
     if (newResume?._id) await Resume.findByIdAndDelete(newResume._id);
-    res.status(500).json({ error: 'Error during the upload process. Check server logs.' });
+    res.status(500).json({ error: 'Failed to upload resume for processing. Please try again later.' });
   }
 };
 
@@ -153,4 +159,3 @@ export const generatePortfolioZip = async (req, res) => {
     res.status(500).send({ message: 'Server error while generating ZIP.' });
   }
 };
-

@@ -23,7 +23,7 @@
     {
       "src": "/(.*)",
       "headers": { "cache-control": "s-maxage=0" },
-      "dest": "/client/dist/index.html"
+      "dest": "/index.html"
     }
   ]
 }
