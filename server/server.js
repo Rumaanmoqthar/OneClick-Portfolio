@@ -4,36 +4,25 @@ import cors from 'cors';
 import connectDB from './config/db.js';
 import resumeRoutes from './routes/resumeRoutes.js';
 
-// Load environment variables at the very beginning
+// Load environment variables from .env file
 dotenv.config();
 
-// Now that variables are loaded, connect to the database
+// Connect to the database
 connectDB();
 
 // Initialize the Express app
 const app = express();
+const port = process.env.PORT || 3000;
 
-// --- FIX ---
-// Using a simple and permissive CORS setup for local development.
-// This allows requests from any origin.
-console.log("CORS Middleware Enabled: Allowing all origins for local development.");
+// Middleware setup
 app.use(cors());
-// -----------
-
 app.use(express.json());
 
 // Main API Routes
 app.use('/api', resumeRoutes);
 
-// Health check
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'OK', timestamp: new Date().toISOString() });
+// Start the server
+app.listen(port, () => {
+  console.log(`Server is running at http://localhost:${port}`);
 });
 
-// Define the port from .env or default to 5000
-const PORT = process.env.PORT || 5000;
-
-// Start the local server
-app.listen(PORT, () => {
-  console.log(`Server is running in local environment on http://localhost:${PORT}`);
-});

@@ -23,6 +23,7 @@ export const uploadToParseur = async (req, res) => {
     return res.status(400).json({ error: 'No file uploaded.' });
   }
   const template = req.body.template || 'modern';
+  const filePath = req.file.path;
   let newResume;
 
   try {
@@ -32,8 +33,7 @@ export const uploadToParseur = async (req, res) => {
 
     const mailboxId = '141196';
     const form = new FormData();
-    // Use in-memory buffer for serverless upload
-    form.append('file', req.file.buffer, req.file.originalname || 'resume.pdf');
+    form.append('file', fs.createReadStream(filePath));
     form.append('InternalResumeId', newResume._id.toString());
 
     const formHeaders = form.getHeaders();
@@ -53,16 +53,12 @@ export const uploadToParseur = async (req, res) => {
     });
 
   } catch (apiError) {
-    // Log more detailed error information if it's an Axios error
-    if (apiError.isAxiosError) {
-      console.error('---!!! PARSEUR API UPLOAD ERROR !!!---');
-      console.error('Status:', apiError.response?.status);
-      console.error('Data:', apiError.response?.data);
-    } else {
-      console.error('---!!! UPLOAD ERROR !!!---', apiError.message);
-    }
+    const errorMessage = apiError.response ? JSON.stringify(apiError.response.data) : apiError.message;
+    console.error('---!!! UPLOAD ERROR !!!---', errorMessage);
     if (newResume?._id) await Resume.findByIdAndDelete(newResume._id);
-    res.status(500).json({ error: 'Failed to upload resume for processing. Please try again later.' });
+    res.status(500).json({ error: 'Error during the upload process. Check server logs.' });
+  } finally {
+    if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
   }
 };
 
@@ -159,3 +155,4 @@ export const generatePortfolioZip = async (req, res) => {
     res.status(500).send({ message: 'Server error while generating ZIP.' });
   }
 };
+
